@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
 
 class LocationScreen extends StatefulWidget {
-
-
   @override
   _LocationScreenState createState() => _LocationScreenState();
 }
@@ -14,21 +12,16 @@ class LocationScreen extends StatefulWidget {
 class _LocationScreenState extends State<LocationScreen> {
   WeatherModel weatherObject = WeatherModel();
 
-  var weatherCondition;
-  var temp;
-  var cityName;
-  var weatherIcon;
-  var message;
+  var weatherCondition = 0;
+  var temp = 0;
+  var cityName = "";
+  var weatherIcon = "Error";
+  var message = "No Data";
   @override
   void initState() {
-    // var weatherInfo = jsonDecode(widget.weatherData);
-    // weatherCondition = weatherInfo['weather'][0]['id'];
-    // temp = weatherInfo['main']['temp'];
-    // cityName = weatherInfo["name"];
-    // weatherIcon = weatherObject.getWeatherIcon(weatherCondition);
-    // message = weatherObject.getMessage(temp);
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
