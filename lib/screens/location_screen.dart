@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:clima/services/weather.dart';
 import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
 
 class LocationScreen extends StatefulWidget {
+  final String data;
+  LocationScreen({required this.data});
   @override
   _LocationScreenState createState() => _LocationScreenState();
 }
@@ -12,16 +15,29 @@ class LocationScreen extends StatefulWidget {
 class _LocationScreenState extends State<LocationScreen> {
   WeatherModel weatherObject = WeatherModel();
 
-  var weatherCondition = 0;
+
+  dynamic weatherCondition = 0;
   var temp = 0;
   var cityName = "";
   var weatherIcon = "Error";
   var message = "No Data";
+
+  getLocationWeather(String data) {
+    if (data != null) {
+      weatherCondition = data["weather"][0]["id"] ;
+      var temp = 0;
+      var cityName = "";
+      var weatherIcon = "Error";
+      var message = "No Data";
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    dynamic weatherData = widget.data;
+    getLocationWeather(weatherData!);
   }
-
 
   @override
   Widget build(BuildContext context) {

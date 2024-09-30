@@ -10,44 +10,45 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  getWeatherData() async {
-    http.Response request = await http.get(Uri.parse(
+  //TODO 01 get data from internet
+  Future<dynamic> getWeatherData() async {
+    // var weatherData
+    final request = await http.get(Uri.parse(
         "https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&units=metric&appid=9d1e7529d24f70e46bb3042b097a05f7"));
 
     if (request.statusCode == 200) {
       var response = request.body;
       var data = jsonDecode(response);
-      var weatherCode = data["weather"][0]["id"];
-      var temp = data["main"]["temp"];
-      var cityName = data["name"];
-      print(cityName);
+      // return response;
     } else {
       print('Error');
     }
   }
 
-  fetchAllData()async{
-    await getWeatherData();
+  fetchAll() async {
+    dynamic weatherData = await getWeatherData();
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) {
-        return LocationScreen();
+        return LocationScreen(data: weatherData);
       }),
     );
   }
 
   @override
   void initState() {
-    getWeatherData();
+    fetchAll();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: CircularProgressIndicator()
-      ),
+      body: Center(child: CircularProgressIndicator()),
     );
   }
 }
+
+      // var weatherCode = weatherData["weather"][0]["id"];
+      // var temp = weatherData["main"]["temp"];
+      // var cityName = weatherData["name"];
