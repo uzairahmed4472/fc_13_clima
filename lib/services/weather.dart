@@ -31,3 +31,5 @@ class WeatherModel {
     }
   }
 }
+
+  WeatherModel weatherObject = WeatherModel(); // 

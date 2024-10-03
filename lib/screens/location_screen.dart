@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'dart:ffi';
 
+import 'package:clima/screens/city_screen.dart';
+import 'package:clima/services/networking.dart';
 import 'package:clima/services/weather.dart';
 import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
@@ -13,34 +14,56 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  WeatherModel weatherObject = WeatherModel();
+  int? weatherCondition;
+  double? temp;
+  String? cityName;
+  String? weatherIcon;
+  String? message;
 
+  String? getCityName;
 
-  dynamic weatherCondition = 0;
-  var temp = 0;
-  var cityName = "";
-  var weatherIcon = "Error";
-  var message = "No Data";
+  getCityWeather(String city) async {
+    var cityWeatherOBJ = Networking(
+        "https://api.openweathermap.org/data/2.5/weather?q=$city&units=metric&appid=9d1e7529d24f70e46bb3042b097a05f7");
+    var cityResponse = await cityWeatherOBJ.getWeatherData();
+    return cityResponse;
+  }
 
-  getLocationWeather(String data) {
-    if (data != null) {
-      weatherCondition = data["weather"][0]["id"] ;
-      var temp = 0;
-      var cityName = "";
-      var weatherIcon = "Error";
-      var message = "No Data";
+  fetchWeatherData(String data) {
+    if (data.isNotEmpty) {
+      // openAPI data
+      setState(() {
+        var weatherDataJson = jsonDecode(data);
+        weatherCondition = weatherDataJson["weather"][0]["id"];
+        temp = weatherDataJson["main"]["temp"];
+        cityName = weatherDataJson['name'];
+        weatherIcon = weatherObject.getWeatherIcon(weatherCondition!);
+        message = weatherObject.getMessage(temp!.round());
+      });
+    } else {
+      // local data
+      setState(() {
+        weatherCondition = 0;
+        temp = 0;
+        cityName = "";
+        weatherIcon = "Error";
+        message = "No Data";
+      });
     }
   }
 
   @override
   void initState() {
     super.initState();
-    dynamic weatherData = widget.data;
-    getLocationWeather(weatherData!);
+    String dataFromLoading = widget.data;
+
+    fetchWeatherData(dataFromLoading!);
+    print(getCityName);
   }
 
   @override
   Widget build(BuildContext context) {
+    // print(getCityName);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -68,7 +91,16 @@ class _LocationScreenState extends State<LocationScreen> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      getCityName = await Navigator.push(context,
+                          MaterialPageRoute(builder: (contexr) {
+                        return CityScreen();
+                      }));
+
+                      var cityName = await getCityWeather(getCityName!);
+
+                      fetchWeatherData(cityName);
+                    },
                     child: Icon(
                       Icons.location_city,
                       size: 50.0,
@@ -81,7 +113,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '$temp°',
+                      '${temp!.round()}°',
                       style: kTempTextStyle,
                     ),
                     Text(
@@ -94,7 +126,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  "$message in $cityName!",
+                  "$message $cityName",
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),

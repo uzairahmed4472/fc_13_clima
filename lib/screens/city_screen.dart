@@ -10,24 +10,15 @@ class CityScreen extends StatefulWidget {
 }
 
 class _CityScreenState extends State<CityScreen> {
+  String? cityName;
+
   @override
   void initState() {
-    print("init runs");
-    var parseLocation = Location();
-    parseLocation.determinePosition();
     super.initState();
   }
 
   @override
-  void deactivate() {
-    // TODO: implement deactivate
-    print("deactivate runs");
-    super.deactivate();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    print("build runs");
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -55,16 +46,20 @@ class _CityScreenState extends State<CityScreen> {
                 child: null,
               ),
               TextField(
-                
+                // keyboardType: TextInputType.emailAddress,
+
                 style: TextStyle(
-                  
                   fontWeight: FontWeight.bold,
                 ),
                 decoration: InputDecoration(
+                    icon: Icon(
+                      Icons.location_city,
+                      size: 50,
+                    ),
                     border: OutlineInputBorder(),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.green,
+                        color: Colors.white,
                       ),
                     ),
                     errorBorder: OutlineInputBorder(
@@ -72,22 +67,15 @@ class _CityScreenState extends State<CityScreen> {
                         color: Colors.red,
                       ),
                     ),
-                    label: Text("data"),
-                    hintText: "DATAAA"),
+                    label: Text("City"),
+                    hintText: "Enter City Name"),
                 onChanged: (value) {
-                  print(value);
+                  cityName = value.trim();
                 },
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return LocationScreen();
-                      },
-                    ),
-                  );
+                  Navigator.pop(context, cityName);
                 },
                 child: Text(
                   'Get Weather',
